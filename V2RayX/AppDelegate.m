@@ -120,17 +120,7 @@ static AppDelegate *appDelegate;
     });
     
     // set up pac server
-    __weak typeof(self) weakSelf = self;
-    //http://stackoverflow.com/questions/14556605/capturing-self-strongly-in-this-block-is-likely-to-lead-to-a-retain-cycle
-    webServer = [[GCDWebServer alloc] init];
-    [webServer addHandlerForMethod:@"GET" path:@"/proxy.pac" requestClass:[GCDWebServerRequest class] processBlock:^GCDWebServerResponse *(GCDWebServerRequest* request) {
-        return [GCDWebServerDataResponse responseWithData:[weakSelf pacData] contentType:@"application/x-ns-proxy-autoconfig"];
-    }];
-    [webServer addHandlerForMethod:@"GET" path:@"/config.json" requestClass:[GCDWebServerRequest class] processBlock:^GCDWebServerResponse * _Nullable(__kindof GCDWebServerRequest * _Nonnull request) {
-        return [GCDWebServerDataResponse responseWithData:[weakSelf v2rayJSONconfig] contentType:@"application/json"];
-    }];
-    [webServer startWithPort:webServerPort bonjourName:nil];
-    
+    [self disableViewConfigOnWebService];
     
     [self checkUpgrade:self];
     
@@ -1067,8 +1057,48 @@ static AppDelegate *appDelegate;
     }
 }
 
+- (void)enableViewConfigOnWebService {
+    if ([webServer isRunning]) {
+        [webServer stop];
+    }
+    __weak typeof(self) weakSelf = self;
+    //http://stackoverflow.com/questions/14556605/capturing-self-strongly-in-this-block-is-likely-to-lead-to-a-retain-cycle
+    if (!webServer) {
+        webServer = [[GCDWebServer alloc] init];
+    }
+    [webServer addHandlerForMethod:@"GET" path:@"/proxy.pac" requestClass:[GCDWebServerRequest class] processBlock:^GCDWebServerResponse *(GCDWebServerRequest* request) {
+        return [GCDWebServerDataResponse responseWithData:[weakSelf pacData] contentType:@"application/x-ns-proxy-autoconfig"];
+    }];
+    [webServer addHandlerForMethod:@"GET" path:@"/config.json" requestClass:[GCDWebServerRequest class] processBlock:^GCDWebServerResponse * _Nullable(__kindof GCDWebServerRequest * _Nonnull request) {
+        return [GCDWebServerDataResponse responseWithData:[weakSelf v2rayJSONconfig] contentType:@"application/json"];
+    }];
+    [webServer startWithPort:webServerPort bonjourName:nil];
+}
+
+- (void)disableViewConfigOnWebService {
+    if ([webServer isRunning]) {
+        [webServer stop];
+    }
+    __weak typeof(self) weakSelf = self;
+    //http://stackoverflow.com/questions/14556605/capturing-self-strongly-in-this-block-is-likely-to-lead-to-a-retain-cycle
+    if (!webServer) {
+        webServer = [[GCDWebServer alloc] init];
+    }
+    [webServer addHandlerForMethod:@"GET" path:@"/proxy.pac" requestClass:[GCDWebServerRequest class] processBlock:^GCDWebServerResponse *(GCDWebServerRequest* request) {
+        return [GCDWebServerDataResponse responseWithData:[weakSelf pacData] contentType:@"application/x-ns-proxy-autoconfig"];
+    }];
+    [webServer addHandlerForMethod:@"GET" path:@"/config.json" requestClass:[GCDWebServerRequest class] processBlock:^GCDWebServerResponse * _Nullable(__kindof GCDWebServerRequest * _Nonnull request) {
+        NSString *timeoutStr = NSLocalizedString(@"configAlert", nil);
+        return [GCDWebServerDataResponse responseWithData:[timeoutStr dataUsingEncoding:NSUTF8StringEncoding] contentType:@"application/json"];
+    }];
+    [webServer startWithPort:webServerPort bonjourName:nil];
+}
+
 - (IBAction)viewConfigJson:(NSMenuItem *)sender {
+    [self.class cancelPreviousPerformRequestsWithTarget:self selector:@selector(disableViewConfigOnWebService) object:nil];
+    [self enableViewConfigOnWebService];
     [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://127.0.0.1:%d/config.json", webServerPort]]];
+    [self performSelector:@selector(disableViewConfigOnWebService) withObject:nil afterDelay:5];
 }
 
 int runCommandLine(NSString* launchPath, NSArray* arguments) {

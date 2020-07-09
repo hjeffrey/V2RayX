@@ -45,3 +45,5 @@
 "Cancel" = "Cancel";
 "Yes" = "Yes";
 "Install" = "Install";
+
+"configAlert" = "Time out. Please retry in V2RayX.app.";
