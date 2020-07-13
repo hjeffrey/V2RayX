@@ -1067,10 +1067,10 @@ static AppDelegate *appDelegate;
         webServer = [[GCDWebServer alloc] init];
     }
     [webServer addHandlerForMethod:@"GET" path:@"/proxy.pac" requestClass:[GCDWebServerRequest class] processBlock:^GCDWebServerResponse *(GCDWebServerRequest* request) {
-        return [GCDWebServerDataResponse responseWithData:[weakSelf pacData] contentType:@"application/x-ns-proxy-autoconfig"];
+        return [GCDWebServerDataResponse responseWithData:[weakSelf pacData] contentType:@"application/x-ns-proxy-autoconfig; charset=UTF-8"];
     }];
     [webServer addHandlerForMethod:@"GET" path:@"/config.json" requestClass:[GCDWebServerRequest class] processBlock:^GCDWebServerResponse * _Nullable(__kindof GCDWebServerRequest * _Nonnull request) {
-        return [GCDWebServerDataResponse responseWithData:[weakSelf v2rayJSONconfig] contentType:@"application/json"];
+        return [GCDWebServerDataResponse responseWithData:[weakSelf v2rayJSONconfig] contentType:@"application/json; charset=UTF-8"];
     }];
     [webServer startWithPort:webServerPort bonjourName:nil];
 }
@@ -1085,11 +1085,11 @@ static AppDelegate *appDelegate;
         webServer = [[GCDWebServer alloc] init];
     }
     [webServer addHandlerForMethod:@"GET" path:@"/proxy.pac" requestClass:[GCDWebServerRequest class] processBlock:^GCDWebServerResponse *(GCDWebServerRequest* request) {
-        return [GCDWebServerDataResponse responseWithData:[weakSelf pacData] contentType:@"application/x-ns-proxy-autoconfig"];
+        return [GCDWebServerDataResponse responseWithData:[weakSelf pacData] contentType:@"application/x-ns-proxy-autoconfig; charset=UTF-8"];
     }];
     [webServer addHandlerForMethod:@"GET" path:@"/config.json" requestClass:[GCDWebServerRequest class] processBlock:^GCDWebServerResponse * _Nullable(__kindof GCDWebServerRequest * _Nonnull request) {
         NSString *timeoutStr = NSLocalizedString(@"configAlert", nil);
-        return [GCDWebServerDataResponse responseWithData:[timeoutStr dataUsingEncoding:NSUTF8StringEncoding] contentType:@"application/json"];
+        return [GCDWebServerDataResponse responseWithData:[timeoutStr dataUsingEncoding:NSUTF8StringEncoding] contentType:@"application/json; charset=UTF-8"];
     }];
     [webServer startWithPort:webServerPort bonjourName:nil];
 }
