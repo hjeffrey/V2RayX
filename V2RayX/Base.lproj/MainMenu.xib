@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17701"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
@@ -681,7 +681,7 @@
                     </menu>
                 </menuItem>
             </items>
-            <point key="canvasLocation" x="308" y="-330"/>
+            <point key="canvasLocation" x="-87" y="-543"/>
         </menu>
         <menu id="yZm-2L-r3v">
             <items>
@@ -760,6 +760,12 @@
                         <action selector="resetPac:" target="Voe-Tx-rLC" id="WUw-A2-aU5"/>
                     </connections>
                 </menuItem>
+                <menuItem title="Upgrade GFW pac file" id="gjx-Oy-eug" userLabel="Upgrade pac of GFW">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="updateGFWlistList:" target="Voe-Tx-rLC" id="a4A-Di-UiC"/>
+                    </connections>
+                </menuItem>
                 <menuItem title="Authorize v2rayx_sysconf..." id="mOc-zi-Beb">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
@@ -828,7 +834,7 @@
                     </connections>
                 </menuItem>
             </items>
-            <point key="canvasLocation" x="120" y="-141"/>
+            <point key="canvasLocation" x="-208" y="198"/>
         </menu>
     </objects>
 </document>
