@@ -197,7 +197,7 @@
         if (_outboundTable.selectedRow != _selectedOutbound) {
             [self checkOutbound];
         } else {
-            NSLog(@"do nothing");
+            //NSLog(@"do nothing");
         }
     }
     if (notification.object == _ruleSetTable) {
@@ -316,7 +316,7 @@
         [alert addButtonWithTitle:NSLocalizedString(@"Cancel",nil)];
         [alert beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse returnCode) {
             if (returnCode == NSAlertFirstButtonReturn) {
-                NSLog(@"will rest");
+                //NSLog(@"will rest");
                 self->_routingRuleSets = [@[ROUTING_GLOBAL, ROUTING_BYPASSCN_PRIVATE_APPLE, ROUTING_DIRECT] mutableDeepCopy];
                 NSUInteger originalIndex = self->_ruleSetTable.selectedRow;
                 [self->_ruleSetTable selectRowIndexes:[NSIndexSet indexSetWithIndex:0] byExtendingSelection:NO]; // toggle
@@ -430,7 +430,7 @@
     [self.popover close];
     if (sender == _saveIPListButton) {
         self.routingRuleSets[_selectedRuleSet][@"rules"][_selectedRule][@"ip"] = [[_ipTextView string] componentsSeparatedByString:@"\n"];
-        NSLog(@"%@", self.routingRuleSets[_selectedRuleSet][@"rules"][_selectedRule][@"ip"]);
+        //NSLog(@"%@", self.routingRuleSets[_selectedRuleSet][@"rules"][_selectedRule][@"ip"]);
     } else {
         self.routingRuleSets[_selectedRuleSet][@"rules"][_selectedRule][@"domain"] = [[_ipTextView string] componentsSeparatedByString:@"\n"];
     }
@@ -444,7 +444,7 @@
 //
 
 - (IBAction)addRemoveSubscription:(id)sender {
-    NSLog(@"%@", sender);
+    //NSLog(@"%@", sender);
     
     if ([sender selectedSegment] == 0) {
         [_subscriptions addObject:NSLocalizedString(@"enter your subscription link here", nil)];
@@ -453,7 +453,7 @@
         [_subscriptions removeObjectAtIndex:[_subscriptionTable selectedRow]];
         [_subscriptionTable reloadData];
     }
-    NSLog(@"%@", _subscriptions);
+    //NSLog(@"%@", _subscriptions);
 }
 
 // configs

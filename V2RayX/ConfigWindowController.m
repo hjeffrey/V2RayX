@@ -70,7 +70,8 @@
     _profiles = [[NSMutableArray alloc] init];
     _outbounds = [[NSMutableArray alloc] init];
     for (NSDictionary *p in _appDelegate.profiles) {
-        if ([@"vmess" isEqualToString:p[@"protocol"]] && [p[@"settings"][@"vnext"] count] == 1) {
+        if (([@"vmess" isEqualToString:p[@"protocol"]] || [@"vless" isEqualToString:p[@"protocol"]])
+            && [p[@"settings"][@"vnext"] count] == 1) {
             [_profiles addObject:[ServerProfile profilesFromJson:p][0]];
         } else {
             [_outbounds addObject:p];
@@ -332,6 +333,7 @@
 }
 
 - (IBAction)importFromStandardLink:(id)sender {
+    /// TODO: 支持VLess
     [self askInputWithPrompt:NSLocalizedString(@"Support standard vmess:// and ss:// link. Standard vmess:// link is still under discussion. Use \"Import from other links...\" to import other links, for example, vmess:// invented by v2rayN.", nil) handler:^(NSString *inputStr) {
         if (inputStr.length) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
@@ -361,16 +363,17 @@
 }
 
 - (IBAction)importFromMiscLinks:(id)sender {
+    /// TODO: 支持VLESS
     [self askInputWithPrompt:NSLocalizedString(@"V2RayX will try importing ssd://, vmess:// and http(s):// links from v2rayN and SSD(may cause failure).", nil) handler:^(NSString *inputStr) {
         inputStr = [inputStr stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
         if ([inputStr length] != 0) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-                ServerProfile* p = [ConfigImporter importFromVmessOfV2RayN:inputStr];
-                NSInteger vmessCount = 0;
+                ServerProfile* p = [ConfigImporter importFromProtocolOfV2RayN:inputStr];
+                NSInteger v2rayCount = 0;
                 NSInteger otherCount = 0;
                 if (p) {
                     [self.profiles addObject:p];
-                    vmessCount = 1;
+                    v2rayCount = 1;
                 }
                 NSDictionary* ssdResult = [ConfigImporter importFromSubscriptionOfSSD:inputStr];
                 for (NSDictionary* d in ssdResult[@"other"]) {
@@ -380,11 +383,13 @@
                 NSMutableDictionary* p2 = [ConfigImporter importFromHTTPSubscription:inputStr];
                 if (p2) {
                     [self.profiles addObjectsFromArray:p2[@"vmess"]];
+                    [self.profiles addObjectsFromArray:p2[@"vless"]];
                     [self.outbounds addObjectsFromArray:p2[@"other"]];
-                    vmessCount += [p2[@"vmess"] count];
+                    v2rayCount += [p2[@"vmess"] count];
+                    v2rayCount += [p2[@"vless"] count];
                     otherCount += [p2[@"other"] count];
                 }
-                [self presentImportResultOfVmessCount:vmessCount otherCount:otherCount ruleSetCount:0];
+                [self presentImportResultOfVmessCount:v2rayCount otherCount:otherCount ruleSetCount:0];
             });
         }
     }];
@@ -396,16 +401,17 @@
     [openPanel setAllowsMultipleSelection:YES];
     [openPanel setAllowedFileTypes:@[@"json"]];
     [openPanel setDirectoryURL:[[NSFileManager defaultManager] homeDirectoryForCurrentUser]];
-
+    /// TODO: 支持VLess
     [openPanel beginSheetModalForWindow:[self window]  completionHandler:^(NSModalResponse result) {
         if (result == NSModalResponseOK) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
                 NSArray* files = [openPanel URLs];
                 NSMutableDictionary* result = [ConfigImporter importFromStandardConfigFiles:files];
                 [self.profiles addObjectsFromArray:result[@"vmess"]];
+                [self.profiles addObjectsFromArray:result[@"vless"]];
                 [self.outbounds addObjectsFromArray:result[@"other"]];
                 [self.routingRuleSets addObjectsFromArray:result[@"rules"]];
-                [self presentImportResultOfVmessCount:[result[@"vmess"] count] otherCount:[result[@"other"] count] ruleSetCount:[result[@"rules"] count]];
+                [self presentImportResultOfVmessCount:[result[@"vmess"] count]+[result[@"vless"] count] otherCount:[result[@"other"] count] ruleSetCount:[result[@"rules"] count]];
             });
         }
     }];

@@ -591,6 +591,7 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"$SRCROOT\"/V2RayX/dlcore.sh\n";
+			showEnvVarsInLog = 0;
 		};
 		9DB94D77209D273A0001E9DD /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -605,6 +606,7 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "buildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"$INFOPLIST_FILE\")\nbuildNumber=$(($buildNumber + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"$INFOPLIST_FILE\"\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -898,7 +900,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = V2RayX/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MARKETING_VERSION = 1.5.2;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = cenmrev.V2RayX;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -912,7 +914,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = V2RayX/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MARKETING_VERSION = 1.5.2;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = cenmrev.V2RayX;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

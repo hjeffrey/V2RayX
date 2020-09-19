@@ -9,6 +9,11 @@
 #import "AppDelegate.h"
 #import "utilities.h"
 
+typedef enum ProtocolType : NSUInteger {
+    vless,
+    vmess
+} ProtocolType;
+
 typedef enum SecurityType : NSUInteger {
     auto_,
     aes_128_gcm,
@@ -24,17 +29,22 @@ typedef enum NetWorkType : NSUInteger {
     quic
 } NetWorkType;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface ServerProfile : NSObject
 - (NSMutableDictionary*)outboundProfile;
 + (ServerProfile* _Nullable )readFromAnOutboundDic:(NSDictionary*)outDict;
 + (NSArray*)profilesFromJson:(NSDictionary*)outboundJson;
 -(ServerProfile*)deepCopy;
 
+@property (nonatomic) ProtocolType protocolType;
+@property (nonatomic) NSString* protocol;
 @property (nonatomic) NSString* address;
 @property (nonatomic) NSUInteger port;
 @property (nonatomic) NSString* userId;
-@property (nonatomic) NSUInteger alterId;
+@property (nonatomic) NSUInteger alterId; // VMESS
 @property (nonatomic) NSUInteger level;
+@property (nonatomic) NSString* encryption; // VLESS
 @property (nonatomic) NSString* outboundTag;
 @property (nonatomic) SecurityType security;
 @property (nonatomic) NetWorkType network;
@@ -42,3 +52,5 @@ typedef enum NetWorkType : NSUInteger {
 @property (nonatomic) NSDictionary* streamSettings; // except network type.
 @property (nonatomic) NSDictionary* muxSettings;
 @end
+
+NS_ASSUME_NONNULL_END

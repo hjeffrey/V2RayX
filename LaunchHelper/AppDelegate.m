@@ -17,7 +17,7 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     // Insert code here to initialize your application
-    NSLog(@"V2RayX LaunchHelper");
+    //NSLog(@"V2RayX LaunchHelper");
     
     NSWorkspace* ws = [NSWorkspace sharedWorkspace];
     BOOL bLaunched = NO;

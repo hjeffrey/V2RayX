@@ -115,7 +115,7 @@ static AppDelegate *appDelegate;
             [self->coreProcess launch];
             [[stdinpipe fileHandleForWriting] closeFile];
             [self->coreProcess waitUntilExit];
-            NSLog(@"core exit with code %d", [self->coreProcess terminationStatus]);
+            //NSLog(@"core exit with code %d", [self->coreProcess terminationStatus]);
         }
     });
     
@@ -234,17 +234,17 @@ static AppDelegate *appDelegate;
     [installAlert addButtonWithTitle:NSLocalizedString(@"Quit", nil)];
     [installAlert setMessageText:NSLocalizedString(@"V2RayX needs to install a small tool to /Library/Application Support/V2RayX/ with administrator privileges to set system proxy quickly.\nOtherwise you need to type in the administrator password every time you change system proxy through V2RayX.", nil)];
     if ([installAlert runModal] == NSAlertFirstButtonReturn) {
-        NSLog(@"start install");
+        //NSLog(@"start install");
         NSString *helperPath = [NSString stringWithFormat:@"%@/%@", [[NSBundle mainBundle] resourcePath], @"install_helper.sh"];
-        NSLog(@"run install script: %@", helperPath);
+        //NSLog(@"run install script: %@", helperPath);
         NSDictionary *error;
         NSString *script = [NSString stringWithFormat:@"do shell script \"bash %@\" with administrator privileges", helperPath];
         NSAppleScript *appleScript = [[NSAppleScript new] initWithSource:script];
         if ([appleScript executeAndReturnError:&error]) {
-            NSLog(@"installation success");
+            //NSLog(@"installation success");
             return YES;
         } else {
-            NSLog(@"installation failure");
+            //NSLog(@"installation failure");
             //unknown failure
             return NO;
         }
@@ -477,7 +477,7 @@ static AppDelegate *appDelegate;
         for (NSString* key in [settings allKeys]) {
             [[NSUserDefaults standardUserDefaults] setObject:settings[key] forKey:key];
         }
-        NSLog(@"Settings saved.");
+        //NSLog(@"Settings saved.");
     });
 }
 
@@ -489,7 +489,7 @@ static AppDelegate *appDelegate;
     //unload v2ray
     //runCommandLine(@"/bin/launchctl", @[@"unload", plistPath]);
     [self unloadV2ray];
-    NSLog(@"V2RayX quiting, V2Ray core unloaded.");
+    //NSLog(@"V2RayX quiting, V2Ray core unloaded.");
     //remove log file
     [[NSFileManager defaultManager] removeItemAtPath:logDirPath error:nil];
     //save application status
@@ -552,7 +552,7 @@ static AppDelegate *appDelegate;
     selectedCusServerIndex = MIN((NSInteger)cusProfiles.count - 1, selectedCusServerIndex );
     _selectedRoutingSet = MIN((NSInteger)_routingRuleSets.count - 1, _selectedRoutingSet);
     
-    NSLog(@"%ld, %ld", selectedServerIndex, selectedCusServerIndex);
+    //NSLog(@"%ld, %ld", selectedServerIndex, selectedCusServerIndex);
     if ((!useMultipleServer && selectedServerIndex == -1 && selectedCusServerIndex == -1) || (useMultipleServer && profiles.count + _subsOutbounds.count < 1)) {
         proxyState = false;
     } else if (!useMultipleServer && selectedCusServerIndex == -1) {
@@ -613,7 +613,7 @@ static AppDelegate *appDelegate;
 }
 
 - (void)updatePacMenuList {
-    NSLog(@"updatePacMenuList");
+    //NSLog(@"updatePacMenuList");
     [_pacListMenu removeAllItems];
     NSString *pacDir = [NSString stringWithFormat:@"%@/Library/Application Support/V2RayX/pac", NSHomeDirectory()];
     
@@ -699,7 +699,7 @@ static AppDelegate *appDelegate;
                     if ([cusJson[@"inbound"][@"protocol"] isEqualToString:@"socks"]) {
                         cusSocksPort = [cusJson[@"inbound"][@"port"] integerValue];
                     }
-                    NSLog(@"socks: %ld, http: %ld", cusSocksPort, cusHttpPort);
+                    //NSLog(@"socks: %ld, http: %ld", cusSocksPort, cusHttpPort);
                     arguments = @[@"global", [NSString stringWithFormat:@"%ld", cusSocksPort], [NSString stringWithFormat:@"%ld", cusHttpPort]];
                 }
             }
@@ -710,7 +710,7 @@ static AppDelegate *appDelegate;
     } else {
         ; // do nothing
     }
-    NSLog(@"system proxy state:%@,%ld",proxyState?@"on":@"off", (long)proxyMode);
+    //NSLog(@"system proxy state:%@,%ld",proxyState?@"on":@"off", (long)proxyMode);
 }
 
 
@@ -725,6 +725,9 @@ static AppDelegate *appDelegate;
             NSDictionary* r = [ConfigImporter importFromHTTPSubscription:link];
             if (r) {
                 for (ServerProfile* p in r[@"vmess"]) {
+                    [self.subsOutbounds addObject:[p outboundProfile]];
+                }
+                for (ServerProfile* p in r[@"vless"]) {
                     [self.subsOutbounds addObject:[p outboundProfile]];
                 }
                 [self.subsOutbounds addObjectsFromArray:r[@"other"]];
@@ -884,7 +887,7 @@ static AppDelegate *appDelegate;
         [self setUseMultipleServer:YES];
         [self setUseCusProfile:NO];
     }
-    NSLog(@"use cus pro:%hhd, select %ld, select cus %ld", useCusProfile, (long)selectedServerIndex, selectedCusServerIndex);
+    //NSLog(@"use cus pro:%hhd, select %ld, select cus %ld", useCusProfile, (long)selectedServerIndex, selectedCusServerIndex);
     [self coreConfigDidChange:self];
 }
 
@@ -894,7 +897,7 @@ static AppDelegate *appDelegate;
     }
 //    dispatch_async(taskQueue, ^{
 //        runCommandLine(@"/bin/launchctl", @[@"unload", self->plistPath]);
-//        NSLog(@"V2Ray core unloaded.");
+//        //NSLog(@"V2Ray core unloaded.");
 //    });
 }
 
@@ -953,7 +956,7 @@ static AppDelegate *appDelegate;
         
     }
 
-//    NSLog(@"%@", allOutbounds);
+//    //NSLog(@"%@", allOutbounds);
     BOOL usebalance = false;
     for (NSDictionary* rule in fullConfig[@"routing"][@"rules"]) {
         if (rule[@"balancerTag"] && !rule[@"outboundTag"]) {
@@ -983,7 +986,7 @@ static AppDelegate *appDelegate;
 
 //-(void)generateLaunchdPlist:(NSString*)path {
 //    NSString* v2rayPath = [self getV2rayPath];
-//    NSLog(@"use core: %@", v2rayPath);
+//    //NSLog(@"use core: %@", v2rayPath);
 //    NSString *configPath = [NSString stringWithFormat:@"http://127.0.0.1:%d/config.json", webServerPort];
 //    NSDictionary *runPlistDic = [[NSDictionary alloc] initWithObjects:@[@"v2rayproject.v2rayx.v2ray-core", @[v2rayPath, @"-config", configPath], [NSNumber numberWithBool:YES]] forKeys:@[@"Label", @"ProgramArguments", @"RunAtLoad"]];
 //    [runPlistDic writeToFile:path atomically:NO];
@@ -1018,9 +1021,9 @@ static AppDelegate *appDelegate;
     if (SMLoginItemSetEnabled((__bridge CFStringRef)bundleID,enabled)) {
         launchAtLogin = enabled;
         
-        NSLog(@"Call SMLoginItemSetEnabled with [%hhd] success", enabled);
+        //NSLog(@"Call SMLoginItemSetEnabled with [%hhd] success", enabled);
     } else {
-        NSLog(@"Call SMLoginItemSetEnabled with [%hhd] failed", enabled);
+        //NSLog(@"Call SMLoginItemSetEnabled with [%hhd] failed", enabled);
     }
     [self updateMenus];
 }
@@ -1117,13 +1120,13 @@ int runCommandLine(NSString* launchPath, NSArray* arguments) {
     NSString *string;
     string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     if (string.length > 0) {
-        NSLog(@"%@", string);
+        //NSLog(@"%@", string);
     }
     file = [stderrpipe fileHandleForReading];
     data = [file readDataToEndOfFile];
     string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     if (string.length > 0) {
-        NSLog(@"%@", string);
+        //NSLog(@"%@", string);
     }
     [task waitUntilExit];
     return task.terminationStatus;
@@ -1131,7 +1134,7 @@ int runCommandLine(NSString* launchPath, NSArray* arguments) {
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
     if ([@"selectedPacFileName" isEqualToString:keyPath]) {
-        NSLog(@"pac file is switched to %@", selectedPacFileName);
+        //NSLog(@"pac file is switched to %@", selectedPacFileName);
         if (dispatchPacSource) { //stop monitor previous pac
             dispatch_source_cancel(dispatchPacSource);
         }
@@ -1147,10 +1150,10 @@ int runCommandLine(NSString* launchPath, NSArray* arguments) {
         int fildes = open([pacFullPath cStringUsingEncoding:NSUTF8StringEncoding], O_RDONLY);
         dispatchPacSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_VNODE, fildes, DISPATCH_VNODE_WRITE | DISPATCH_VNODE_EXTEND, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
         dispatch_source_set_event_handler(dispatchPacSource, ^{
-            NSLog(@"pac file changed");
+            //NSLog(@"pac file changed");
             if (self.proxyMode == pacMode && self.proxyState == true) {
                 [appDelegate updateSystemProxy];
-                NSLog(@"refreshed system pacfile.");
+                //NSLog(@"refreshed system pacfile.");
             }
         });
         dispatch_resume(dispatchPacSource);

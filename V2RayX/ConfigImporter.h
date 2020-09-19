@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSDictionary*)parseStandardSSLink:(NSString*)link;
 + (NSMutableDictionary*)ssOutboundFromSSLink:(NSString*)link;
 + (NSMutableDictionary*)ssOutboundFromSSConfig:(NSDictionary*)jsonObject;
-+ (ServerProfile*)importFromVmessOfV2RayN:(NSString*)vmessStr;
++ (ServerProfile*)importFromProtocolOfV2RayN:(NSString*)vmessStr;
 + (NSMutableDictionary*)importFromHTTPSubscription:(NSString*)httpLink;
 + (NSMutableDictionary*)importFromStandardConfigFiles:(NSArray*)files;
 + (NSMutableDictionary*)validateRuleSet:(NSMutableDictionary*)set;

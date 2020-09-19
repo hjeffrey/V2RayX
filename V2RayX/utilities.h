@@ -10,6 +10,7 @@
 #import <Cocoa/Cocoa.h>
 #import "MutableDeepCopying.h"
 
+#define V2RAY_PROTOCOL_LIST (@[@"vless", @"vmess"])
 #define DOMAIN_STRATEGY_LIST (@[@"AsIs", @"IPIfNonMatch", @"IPOnDemand"])
 #define ROUTING_NETWORK_LIST (@[@"tcp", @"udp", @"tcp,udp"])
 
@@ -33,7 +34,7 @@
 #define SUPPORTED_SS_SECURITY (@[@"aes-256-cfb",@"aes-128-cfb",@"chacha20",@"chacha20-ietf",@"aes-256-gcm",@"aes-128-gcm",@"chacha20-poly1305", @"chacha20-ietf-poly1305"])
 
 #define EMPTY_DICT ([[NSMutableDictionary alloc] init])
-#define EMPTY_IMPORT_RESULT ([@{@"vmess": @[], @"other": @[], @"rules":@[]} mutableDeepCopy])
+#define EMPTY_IMPORT_RESULT ([@{@"vmess": @[], @"vless": @[], @"other": @[], @"rules":@[]} mutableDeepCopy])
 #define SNIFFING_PROTOCOL (@[@"http", @"tls", @"bittorrent"])
 
 

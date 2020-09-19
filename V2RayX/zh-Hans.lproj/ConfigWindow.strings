@@ -78,7 +78,7 @@
 "TXX-VD-4P4.title" = "允许局域网访问";
 
 /* Class = "NSTextFieldCell"; title = "VMess Servers:"; ObjectID = "UpZ-NV-drp"; */
-"UpZ-NV-drp.title" = "VMess 服务器:";
+"UpZ-NV-drp.title" = "V2Ray 服务器:";
 
 /* Class = "NSTextFieldCell"; title = "Log level:"; ObjectID = "Vo6-Qu-ybt"; */
 "Vo6-Qu-ybt.title" = "日志级别:";
@@ -148,3 +148,6 @@
 
 /* Class = "NSMenuItem"; title = "Item"; ObjectID = "tLs-gB-gFx"; */
 "tLs-gB-gFx.title" = "Item";
+
+/* Class = "NSMenuItem"; title = "Item"; ObjectID = "kuF-lU-neW"; */
+"kuF-lU-neW.title" = "协议:";

@@ -102,7 +102,7 @@
                      };
         }
     } @catch (NSException *exception) {
-        NSLog(@"%@", exception);
+        //NSLog(@"%@", exception);
         return nil;
     }
 }
@@ -158,11 +158,11 @@
 
 + (NSMutableDictionary*)validateRuleSet:(NSMutableDictionary*)set {
     if (![set isKindOfClass:[NSMutableDictionary class]]) {
-        NSLog(@"not a mutable dictionary class, %@", [set className]);
+        //NSLog(@"not a mutable dictionary class, %@", [set className]);
         return nil;
     }
     if (!set[@"rules"] || ![set[@"rules"] isKindOfClass:[NSMutableArray class]] || ![set count] ) {
-        NSLog(@"no rules");
+        //NSLog(@"no rules");
         return  nil;
     }
     if (![@"0-65535" isEqualToString: [set[@"rules"] lastObject][@"port"]]) {
@@ -208,7 +208,7 @@
 }
 
 + (NSMutableDictionary*)importFromStandardConfigFiles:(NSArray*)files {
-    NSMutableDictionary* result = [@{@"vmess": @[], @"other": @[], @"rules":@[]} mutableDeepCopy];
+    NSMutableDictionary* result = [@{@"vmess": @[], @"vless": @[], @"other": @[], @"rules":@[]} mutableDeepCopy];
     for (NSURL* file in files) {
         NSError* error;
         id jsonObject = [NSJSONSerialization JSONObjectWithData:
@@ -233,6 +233,8 @@
             }
             if ([@"vmess" isEqualToString:outboundJSON[@"protocol"]]) {
                 [result[@"vmess"] addObject:[ServerProfile profilesFromJson:outboundJSON][0]];
+            } else if ([@"vless" isEqualToString:outboundJSON[@"protocol"]]) {
+                [result[@"vless"] addObject:[ServerProfile profilesFromJson:outboundJSON][0]];
             } else {
                 [result[@"other"] addObject:outboundJSON];
             }
@@ -284,7 +286,8 @@
 
 + (NSMutableDictionary*)importFromHTTPSubscription: (NSString*)httpLink {
     // https://blog.csdn.net/yi_zz32/article/details/48769487
-    NSMutableDictionary* result = [@{@"vmess": @[], @"other": @[]} mutableDeepCopy];
+    /// TODO: 支持VLESS
+    NSMutableDictionary* result = [@{@"vmess": @[],@"vless": @[], @"other": @[]} mutableDeepCopy];
     if ([httpLink length] < 4) {
         return nil;
     }
@@ -303,9 +306,13 @@
         NSArray *decodedDataArray = [decodedDataStr componentsSeparatedByString:@"\n"];
         for (id linkStr in decodedDataArray) {
             if ([linkStr length] != 0) {
-                ServerProfile* p = [ConfigImporter importFromVmessOfV2RayN:linkStr];
+                ServerProfile* p = [ConfigImporter importFromProtocolOfV2RayN:linkStr];
                 if (p) {
-                    [result[@"vmess"] addObject:p];
+                    if ([p.protocol isEqualToString:@"vmess"]) {
+                        [result[@"vmess"] addObject:p];
+                    } else if ([p.protocol isEqualToString:@"vless"]) {
+                        [result[@"vless"] addObject:p];
+                    }
                     continue;
                 }
                 NSMutableDictionary* outbound = [ConfigImporter ssOutboundFromSSLink:linkStr];
@@ -322,8 +329,10 @@
     return nil;
 }
 
-+ (ServerProfile*)importFromVmessOfV2RayN:(NSString*)vmessStr {
-    if ([vmessStr length] < 9 || ![[[vmessStr substringToIndex:8] lowercaseString] isEqualToString:@"vmess://"]) {
++ (ServerProfile*)importFromProtocolOfV2RayN:(NSString*)vmessStr {
+    /// TODO: 支持VLESS协议
+    NSString *protocol = [[vmessStr substringToIndex:8] lowercaseString];
+    if ([vmessStr length] < 9 || !([protocol isEqualToString:@"vmess://"] || [protocol isEqualToString:@"vless://"])) {
         return nil;
     }
     NSString* decodedJsonString = [[ConfigImporter decodeBase64String:[vmessStr substringFromIndex:8]] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
@@ -335,6 +344,7 @@
         return nil;
     }
     ServerProfile* newProfile = [[ServerProfile alloc] init];
+    newProfile.protocol = [protocol substringToIndex:5];
     newProfile.outboundTag = nilCoalescing([sharedServer objectForKey:@"ps"], @"imported From QR");
     newProfile.address = nilCoalescing([sharedServer objectForKey:@"add"], @"");
     newProfile.port = [nilCoalescing([sharedServer objectForKey:@"port"], @0) intValue];
@@ -445,7 +455,7 @@
                 count += 1;
             }
         }
-        NSLog(@"%@", result);
+        //NSLog(@"%@", result);
         return result;
     } @catch (NSException *exception) {
         return EMPTY_IMPORT_RESULT;

@@ -12,10 +12,12 @@
 - (ServerProfile*)init {
     self = [super init];
     if (self) {
+        [self setProtocolType:0];
         [self setAddress:@"server.cc"];
         [self setPort:10086];
         [self setUserId:@"00000000-0000-0000-0000-000000000000"];
         [self setAlterId:64];
+        [self setEncryption:@"none"];
         [self setLevel:0];
         [self setOutboundTag:@"test server"];
         [self setSecurity:auto_];
@@ -73,9 +75,22 @@
     return [[self outboundProfile] description];
 }
 
+- (NSString *)protocol {
+    return V2RAY_PROTOCOL_LIST[self.protocolType];
+}
+
+- (void)setProtocol:(NSString *)protocol {
+    if ([protocol isEqualToString:@"vless"]) {
+        self.protocolType = vless;
+    } else if ([protocol isEqualToString:@"vmess"]) {
+        self.protocolType = vmess;
+    }
+}
+
 + (NSArray*)profilesFromJson:(NSDictionary*)outboundJson {
-    if (![outboundJson[@"protocol"] isKindOfClass:[NSString class]]
-        || ![outboundJson[@"protocol"] isEqualToString:@"vmess"] ) {
+    NSString *protocol = outboundJson[@"protocol"];
+    if (![protocol isKindOfClass:[NSString class]]
+        || !([protocol isEqualToString:@"vmess"] || [protocol isEqualToString:@"vless"]) ) {
         return @[];
     }
     NSMutableArray* profiles = [[NSMutableArray alloc] init];
@@ -85,6 +100,7 @@
     }
     for (NSDictionary* vnext in [outboundJson valueForKeyPath:@"settings.vnext"]) {
         ServerProfile* profile = [[ServerProfile alloc] init];
+        profile.protocol = protocol;
         profile.address = nilCoalescing(vnext[@"address"], @"127.0.0.1");
         profile.outboundTag = nilCoalescing(outboundJson[@"tag"], @"");
         profile.port = [vnext[@"port"] unsignedIntegerValue];
@@ -92,9 +108,14 @@
             continue;
         }
         profile.userId = nilCoalescing(vnext[@"users"][0][@"id"], @"23ad6b10-8d1a-40f7-8ad0-e3e35cd38287");
-        profile.alterId = [vnext[@"users"][0][@"alterId"] unsignedIntegerValue];
+        if ([protocol isEqualToString:@"vless"]) {
+            profile.alterId = 0;
+        } else {
+            profile.alterId = [vnext[@"users"][0][@"alterId"] unsignedIntegerValue];
+        }
         profile.level = [vnext[@"users"][0][@"level"] unsignedIntegerValue];
         profile.security = searchInArray(vnext[@"users"][0][@"security"], VMESS_SECURITY_LIST);
+        profile.encryption = nilCoalescing(vnext[@"users"][0][@"encryption"],@"none");
         if (outboundJson[@"streamSettings"] != nil) {
             profile.streamSettings = outboundJson[@"streamSettings"];
             profile.network = searchInArray(outboundJson[@"streamSettings"][@"network"], NETWORK_LIST);
@@ -119,11 +140,13 @@
 
 -(ServerProfile*)deepCopy {
     ServerProfile* aCopy = [[ServerProfile alloc] init];
+    aCopy.protocol = [NSString stringWithString:nilCoalescing(self.protocol, @"vless")];
     aCopy.address = [NSString stringWithString:nilCoalescing(self.address, @"")];
     aCopy.port = self.port;
     aCopy.userId = [NSString stringWithString:nilCoalescing(self.userId, @"")];
     aCopy.alterId = self.alterId;
     aCopy.level = self.level;
+    aCopy.encryption = [NSString stringWithString:nilCoalescing(self.encryption, @"none")];
     aCopy.outboundTag = [NSString stringWithString:nilCoalescing(self.outboundTag, @"")];
     aCopy.security = self.security;
     aCopy.network = self.network;
@@ -140,7 +163,7 @@
     @{
       @"sendThrough": sendThrough,
       @"tag": nilCoalescing(outboundTag, @""),
-      @"protocol": @"vmess",
+      @"protocol": nilCoalescing(self.protocol, @"vless"),
       @"settings": [@{
               @"vnext": @[
                       @{
@@ -151,7 +174,8 @@
                                       @"id": userId != nil ? [userId stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]: @"",
                                       @"alterId": [NSNumber numberWithUnsignedInteger:alterId],
                                       @"security": VMESS_SECURITY_LIST[security],
-                                      @"level": [NSNumber numberWithUnsignedInteger:level]
+                                      @"level": [NSNumber numberWithUnsignedInteger:level],
+                                      @"encryption": self.encryption
                                       }
                                   ]
                           }
@@ -163,6 +187,7 @@
     return [result mutableCopy];
 }
 
+@synthesize protocol;
 @synthesize address;
 @synthesize port;
 @synthesize userId;

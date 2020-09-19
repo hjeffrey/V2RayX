@@ -42,7 +42,7 @@ int main(int argc, const char * argv[])
             authRef = nil;
         } else {
             if (authRef == NULL) {
-                NSLog(@"No authorization has been granted to modify network configuration");
+                //NSLog(@"No authorization has been granted to modify network configuration");
                 return 1;
             }
             
@@ -94,7 +94,7 @@ int main(int argc, const char * argv[])
                             printf ("error - not a valid port number");
                             return 1;
                         }
-                        NSLog(@"in helper %d %d", localPort, httpPort);
+                        //NSLog(@"in helper %d %d", localPort, httpPort);
                         if (localPort > 0) {
                             [proxies setObject:@"127.0.0.1" forKey:(NSString *)
                              kCFNetworkProxiesSOCKSProxy];
