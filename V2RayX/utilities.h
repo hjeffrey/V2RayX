@@ -16,6 +16,7 @@
 
 #define OBFU_LIST (@[@"none", @"srtp", @"utp", @"wechat-video", @"dtls", @"wireguard"])
 #define VMESS_SECURITY_LIST (@[@"auto", @"aes-128-gcm", @"chacha20-poly1305", @"none"])
+#define VLESS_ENCRYPTION_LIST (@[@"none",@"null"])
 #define NETWORK_LIST (@[@"tcp", @"kcp", @"ws", @"http", @"quic"])
 #define QUIC_SECURITY_LIST (@[@"none", @"aes-128-gcm", @"chacha20-poly1305"])
 #define nilCoalescing(a,b) ( (a != nil) ? (a) : (b) ) // equivalent to ?? operator in Swift

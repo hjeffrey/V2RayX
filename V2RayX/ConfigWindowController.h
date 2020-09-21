@@ -31,6 +31,11 @@
 @property (weak) IBOutlet NSMenu *importFromJsonMenu;
 @property (weak) IBOutlet NSButton *transportSettingsButton;
 
+@property (weak) IBOutlet NSPopUpButton *protocolButton;
+@property (weak) IBOutlet NSTextField *alterIdLabel;
+@property (weak) IBOutlet NSTextField *encryptionLabel;
+@property (weak) IBOutlet NSPopUpButton *encryptionButton;
+
 @property (weak) AppDelegate* appDelegate;
 @property (nonatomic) ServerProfile* selectedProfile;
 @property (nonatomic) NSInteger logLevel;

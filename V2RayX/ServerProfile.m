@@ -7,6 +7,13 @@
 
 #import "ServerProfile.h"
 
+@interface ServerProfile ()
+
+@property (nonatomic) ProtocolType protocolType;
+@property (nonatomic) EncryptionType encryptionType;
+
+@end
+
 @implementation ServerProfile
 
 - (ServerProfile*)init {
@@ -75,6 +82,18 @@
     return [[self outboundProfile] description];
 }
 
+- (NSString *)encryption {
+    return VLESS_ENCRYPTION_LIST[self.encryptionType];
+}
+
+- (void)setEncryption:(NSString *)encryption {
+    if ([encryption isEqualToString:@"none"]) {
+        self.encryptionType = encryptionNone;
+    } else if ([encryption isEqualToString:@"null"]) {
+        self.encryptionType = encryptionNull;
+    }
+}
+
 - (NSString *)protocol {
     return V2RAY_PROTOCOL_LIST[self.protocolType];
 }
@@ -108,11 +127,7 @@
             continue;
         }
         profile.userId = nilCoalescing(vnext[@"users"][0][@"id"], @"23ad6b10-8d1a-40f7-8ad0-e3e35cd38287");
-        if ([protocol isEqualToString:@"vless"]) {
-            profile.alterId = 0;
-        } else {
-            profile.alterId = [vnext[@"users"][0][@"alterId"] unsignedIntegerValue];
-        }
+        profile.alterId = [vnext[@"users"][0][@"alterId"] unsignedIntegerValue];
         profile.level = [vnext[@"users"][0][@"level"] unsignedIntegerValue];
         profile.security = searchInArray(vnext[@"users"][0][@"security"], VMESS_SECURITY_LIST);
         profile.encryption = nilCoalescing(vnext[@"users"][0][@"encryption"],@"none");

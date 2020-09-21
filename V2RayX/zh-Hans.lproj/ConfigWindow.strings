@@ -75,7 +75,7 @@
 "QvC-M9-y7g.title" = "V2RayX";
 
 /* Class = "NSButtonCell"; title = "Share Over LAN"; ObjectID = "TXX-VD-4P4"; */
-"TXX-VD-4P4.title" = "允许局域网访问";
+"TXX-VD-4P4.title" = "局域网访问";
 
 /* Class = "NSTextFieldCell"; title = "VMess Servers:"; ObjectID = "UpZ-NV-drp"; */
 "UpZ-NV-drp.title" = "V2Ray 服务器:";
@@ -132,7 +132,7 @@
 "nRL-kf-uam.title" = "如果更改了默认的代理端口，PAC文件中的端口仍需手动编辑才可生效";
 
 /* Class = "NSButtonCell"; title = "Support UDP"; ObjectID = "pEW-Gw-3ph"; */
-"pEW-Gw-3ph.title" = "开启UDP支持";
+"pEW-Gw-3ph.title" = "支持 UDP";
 
 /* Class = "NSTextFieldCell"; title = "Tag:"; ObjectID = "qUb-Rh-lCr"; */
 "qUb-Rh-lCr.title" = "备注:";
@@ -149,5 +149,8 @@
 /* Class = "NSMenuItem"; title = "Item"; ObjectID = "tLs-gB-gFx"; */
 "tLs-gB-gFx.title" = "Item";
 
-/* Class = "NSMenuItem"; title = "Item"; ObjectID = "kuF-lU-neW"; */
+/* Class = "NSTextFieldCell"; title = "Protocol:"; ObjectID = "kuF-lU-neW"; */
 "kuF-lU-neW.title" = "协议:";
+
+/* Class = "NSTextFieldCell"; title = "encryption:"; ObjectID = "2qT-Gd-jvi"; */
+"2qT-Gd-jvi.title" = "编码:";

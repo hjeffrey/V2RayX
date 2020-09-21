@@ -21,6 +21,11 @@ typedef enum SecurityType : NSUInteger {
     none
 } SecurityType;
 
+typedef enum EncryptionType : NSUInteger {
+    encryptionNone,
+    encryptionNull
+} EncryptionType;
+
 typedef enum NetWorkType : NSUInteger {
     tcp,
     kcp,
@@ -37,7 +42,6 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSArray*)profilesFromJson:(NSDictionary*)outboundJson;
 -(ServerProfile*)deepCopy;
 
-@property (nonatomic) ProtocolType protocolType;
 @property (nonatomic) NSString* protocol;
 @property (nonatomic) NSString* address;
 @property (nonatomic) NSUInteger port;

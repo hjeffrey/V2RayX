@@ -12,7 +12,7 @@
 #import "AdvancedWindowController.h"
 #import "ConfigImporter.h"
 
-@interface ConfigWindowController ()
+@interface ConfigWindowController ()<NSMenuDelegate>
 
 @property (strong) TransportWindowController* transportWindowController;
 @property (strong) AdvancedWindowController* advancedWindowController;
@@ -104,6 +104,13 @@
     
     [_profileTable selectRowIndexes:[NSIndexSet indexSetWithIndex:self.selectedServerIndex] byExtendingSelection:NO];
     [[self window] makeFirstResponder:_profileTable];
+    
+    self.protocolButton.menu.delegate = self;
+}
+
+- (void)setSelectedProfile:(ServerProfile *)selectedProfile {
+    _selectedProfile = selectedProfile;
+    [self changeProtocolUI:_selectedProfile.protocol];
 }
 
 // set controller as profilesTable's datasource
@@ -419,6 +426,28 @@
 
 - (IBAction)showLog:(id)sender {
     [_appDelegate viewLog:sender];
+}
+
+- (void)changeProtocolUI:(NSString *)protocol {
+    if ([protocol isEqualToString:@"vless"]) {
+        self.encryptionLabel.hidden = NO;
+        self.encryptionButton.hidden = NO;
+        self.alterIdLabel.hidden = YES;
+        self.alterIdField.hidden = YES;
+    } else if ([protocol isEqualToString:@"vmess"]) {
+        self.encryptionLabel.hidden = YES;
+        self.encryptionButton.hidden = YES;
+        self.alterIdLabel.hidden = NO;
+        self.alterIdField.hidden = NO;
+    }
+}
+
+#pragma mark - NSMENUDelegate
+
+- (void)menuDidClose:(NSMenu *)menu {
+    NSString *title = self.protocolButton.menu.highlightedItem.title;
+    title = title.lowercaseString;
+    [self changeProtocolUI:title];
 }
 
 @end
