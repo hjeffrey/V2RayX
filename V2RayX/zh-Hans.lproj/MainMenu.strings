@@ -18,7 +18,7 @@
 "1tx-W0-xDw.title" = "Lower";
 
 /* Class = "NSMenuItem"; title = "Upgrade"; ObjectID = "29h-Cl-9kt"; */
-"29h-Cl-9kt.title" = "Upgrade";
+"29h-Cl-9kt.title" = "检查更新";
 
 /* Class = "NSMenuItem"; title = "Quit"; ObjectID = "2N5-MP-9vf"; */
 "2N5-MP-9vf.title" = "退出";

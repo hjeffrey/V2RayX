@@ -289,11 +289,11 @@ static AppDelegate *appDelegate;
 }
 
 - (IBAction)openReleasePage:(id)sender {
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/Cenmrev/V2RayX/releases/latest"]];
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/hjeffrey/V2RayX/releases/latest"]];
 }
 
 - (IBAction)checkUpgrade:(id)sender {
-    NSURL* url =[NSURL URLWithString:@"https://api.github.com/repos/cenmrev/v2rayx/releases/latest"];
+    NSURL* url =[NSURL URLWithString:@"https://api.github.com/repos/hjeffrey/v2rayx/releases/latest"];
     NSURLSessionDataTask* task = [[NSURLSession sharedSession] dataTaskWithURL:url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         @try {
             NSDictionary* d = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
