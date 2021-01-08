@@ -14,7 +14,7 @@
 int main(int argc, const char * argv[])
 {
     if (argc < 2 || argc >4) {
-        printf(INFO);
+        //printf(INFO);
         return 1;
     }
     @autoreleasepool {
@@ -22,12 +22,12 @@ int main(int argc, const char * argv[])
         
         NSSet *support_args = [NSSet setWithObjects:@"off", @"auto", @"global", @"save", @"restore", @"-v", nil];
         if (![support_args containsObject:mode]) {
-            printf(INFO);
+            //printf(INFO);
             return 1;
         }
         
         if ([mode isEqualToString:@"-v"]) {
-            printf("%s", [VERSION UTF8String]);
+            //printf("%s", [VERSION UTF8String]);
             return 0;
         }
         
@@ -129,7 +129,7 @@ int main(int argc, const char * argv[])
             
         }
         
-        printf("proxy set to %s\n", [mode UTF8String]);
+        //printf("proxy set to %s\n", [mode UTF8String]);
     }
     
     return 0;
