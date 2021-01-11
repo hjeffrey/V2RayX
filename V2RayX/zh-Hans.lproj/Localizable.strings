@@ -51,3 +51,6 @@
 "Install" = "安装";
 
 "configAlert" = "已超时，请到V2RayX.app重新查看。";
+
+"v2ray-core started." = "v2ray-core 已启动";
+"v2ray-core stoped." = "v2ray-core 已停止";

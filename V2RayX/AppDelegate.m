@@ -108,14 +108,13 @@ static AppDelegate *appDelegate;
                 [self->coreProcess setLaunchPath:[self getV2rayPath]];
             }
             [self->coreProcess setArguments:@[@"-config", @"stdin:"]];
-            NSPipe* stdinpipe = [NSPipe pipe];
+            __block NSPipe* stdinpipe = [NSPipe pipe];
             [self->coreProcess setStandardInput:stdinpipe];
             NSData* configData = [NSJSONSerialization dataWithJSONObject:[self generateConfigFile] options:0 error:nil];
             [[stdinpipe fileHandleForWriting] writeData:configData];
             [self->coreProcess launch];
             [[stdinpipe fileHandleForWriting] closeFile];
             [self->coreProcess waitUntilExit];
-            //NSLog(@"core exit with code %d", [self->coreProcess terminationStatus]);
         }
     });
     
@@ -662,6 +661,7 @@ static AppDelegate *appDelegate;
 }
 
 - (void)updateMenus {
+    NSString *notificationTitle = NSLocalizedString(@"v2ray-core started.", nil);
     if (proxyState) {
         [_v2rayStatusItem setTitle:NSLocalizedString(@"v2ray-core: loaded", nil)];
         [_enableV2rayItem setTitle:NSLocalizedString(@"Unload core", nil)];
@@ -672,11 +672,18 @@ static AppDelegate *appDelegate;
         [_v2rayStatusItem setTitle:NSLocalizedString(@"v2ray-core: unloaded", nil)];
         [_enableV2rayItem setTitle:NSLocalizedString(@"Load core", nil)];
         [_statusBarItem setImage:[NSImage imageNamed:@"statusBarIcon_disabled"]];
+        notificationTitle = NSLocalizedString(@"v2ray-core stoped.", nil);
     }
     [_pacModeItem setState:proxyMode == pacMode];
     [_manualModeItem setState:proxyMode == manualMode];
     [_globalModeItem setState:proxyMode == globalMode];
     [_lauchAtLoginMenuItem setState:launchAtLogin];
+    ///
+    NSUserNotification *notification = [[NSUserNotification alloc] init];
+    notification.title = @"V2RayX";
+    notification.subtitle = notificationTitle;
+    notification.hasActionButton = NO;
+    [[NSUserNotificationCenter defaultUserNotificationCenter]  deliverNotification:notification];
 }
 
 - (void)updatePacMenuList {
